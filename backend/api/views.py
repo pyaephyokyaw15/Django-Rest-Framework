@@ -9,9 +9,13 @@ from rest_framework import status
 
 @api_view(["POST"])
 def api_home(request):
+    # /api/
     serializer = ProductSerailizer(data=request.data)
-    # print(serializer.data)
+    serializer.is_valid()
+    print(serializer.validated_data)
+
     if serializer.is_valid(raise_exception=True):
+
         print('Serializer', serializer)
         print('Type of Serializer', type(serializer))
 
