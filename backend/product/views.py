@@ -14,6 +14,8 @@ class ProductCreateAPIVIew(generics.CreateAPIView):
     # api/products/
     queryset = Product.objects.all()
     serializer_class = ProductSerailizer
+    permission_classes = [permissions.DjangoModelPermissions]
+
 
     def perform_create(self, serializer):
         # serializer.save(user=self.request.user)
@@ -26,6 +28,8 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerailizer
     # lookup_field = 'pk'
+    permission_classes = [IsStaffEditorPermission]
+
 
 
 
@@ -34,6 +38,7 @@ class ProductUpdateAPIView(generics.UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerailizer
     lookup_field = 'pk'
+    permission_classes = [permissions.DjangoModelPermissions]
 
     def perform_update(self, serializer):
         instance = serializer.save()
@@ -48,7 +53,7 @@ class ProductDeleteAPIView(generics.DestroyAPIView):
     serializer_class = ProductSerailizer
     lookup_field = 'pk'
     authentication_classes = [authentication.SessionAuthentication]
-    permission_classes = [permissions.DjangoModelPermissions]
+    permission_classes = [IsStaffEditorPermission]
 
     def perform_destroy(self, instance):
         # instance
@@ -67,7 +72,7 @@ class ProductListCreateAPIVIew(generics.ListCreateAPIView):
     serializer_class = ProductSerailizer
     authentication_classes = [authentication.SessionAuthentication]
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    #permission_classes = [permissions.DjangoModelPermissions]
+    # permission_classes = [permissions.DjangoModelPermissions]
     permission_classes = [IsStaffEditorPermission]
 
     def perform_create(self, serializer):
