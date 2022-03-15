@@ -8,13 +8,17 @@ from .serializers import ProductSerailizer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import render, get_object_or_404
-
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
+from api.authentication import TokenAuthentication
 
 class ProductCreateAPIVIew(generics.CreateAPIView):
     # api/products/
     queryset = Product.objects.all()
     serializer_class = ProductSerailizer
     permission_classes = [permissions.DjangoModelPermissions]
+    authentication_classes = [authentication.SessionAuthentication]
+    # renderer_classes = [BrowsableAPIRenderer]
+    # renderer_classes = [BrowsableAPIRenderer, JSONRenderer]
 
 
     def perform_create(self, serializer):
@@ -28,7 +32,6 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerailizer
     # lookup_field = 'pk'
-    authentication_classes = [authentication.BasicAuthentication]
     permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
 
@@ -51,7 +54,7 @@ class ProductDeleteAPIView(generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerailizer
     lookup_field = 'pk'
-    authentication_classes = [authentication.SessionAuthentication]
+    authentication_classes = [authentication.SessionAuthentication, authentication.TokenAuthentication]
     # permission_classes = [IsStaffEditorPermission]
 
     def perform_destroy(self, instance):
@@ -63,14 +66,15 @@ class ProductListAPIView(generics.ListAPIView):
     # api/products/list/
     queryset = Product.objects.all()
     serializer_class = ProductSerailizer
+    authentication_classes = [authentication.TokenAuthentication]
 
 
 class ProductListCreateAPIVIew(generics.ListCreateAPIView):
     # api/products/list/create/
     queryset = Product.objects.all()
     serializer_class = ProductSerailizer
-    authentication_classes = [authentication.SessionAuthentication, authentication.TokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
+    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     # permission_classes = [permissions.DjangoModelPermissions]
     permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
