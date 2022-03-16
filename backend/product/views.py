@@ -18,7 +18,7 @@ class ProductCreateAPIVIew(generics.CreateAPIView):
     permission_classes = [permissions.DjangoModelPermissions]
     authentication_classes = [authentication.SessionAuthentication]
     # renderer_classes = [BrowsableAPIRenderer]
-    # renderer_classes = [BrowsableAPIRenderer, JSONRenderer]
+    renderer_classes = [BrowsableAPIRenderer, JSONRenderer]
 
 
     def perform_create(self, serializer):
