@@ -104,11 +104,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# auth_classes = [
+#     "rest_framework.authentication.SessionAuthentication",
+#     "api.authentication.TokenAuthentication"
+# ]
+#
+# if DEBUG:
+#     auth_classes = [
+#         "api.authentication.TokenAuthentication"
+#     ]
+
+
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
-    ]
+    'DEFAULT_AUTHENTICATION_CLASSES': ["rest_framework.authentication.SessionAuthentication",
+                                       "api.authentication.TokenAuthentication"]
 }
 
 # Internationalization

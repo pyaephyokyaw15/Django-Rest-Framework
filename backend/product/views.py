@@ -1,25 +1,27 @@
-from django.shortcuts import render
-
 # Create your views here.
 from rest_framework import authentication, generics, mixins, permissions
 from .models import Product
-from .permissions import IsStaffEditorPermission
+from api.permissions import IsStaffEditorPermission
 from .serializers import ProductSerailizer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from api.authentication import TokenAuthentication
+from api.mixins import StaffEditorPermissionMixin
 
-class ProductCreateAPIVIew(generics.CreateAPIView):
+
+class ProductCreateAPIVIew(
+    StaffEditorPermissionMixin,
+    generics.CreateAPIView
+):
     # api/products/
     queryset = Product.objects.all()
     serializer_class = ProductSerailizer
-    permission_classes = [permissions.DjangoModelPermissions]
+    # permission_classes = [permissions.DjangoModelPermissions]
     authentication_classes = [authentication.SessionAuthentication]
     # renderer_classes = [BrowsableAPIRenderer]
     renderer_classes = [BrowsableAPIRenderer, JSONRenderer]
-
 
     def perform_create(self, serializer):
         # serializer.save(user=self.request.user)
@@ -55,6 +57,7 @@ class ProductDeleteAPIView(generics.DestroyAPIView):
     serializer_class = ProductSerailizer
     lookup_field = 'pk'
     authentication_classes = [authentication.SessionAuthentication, authentication.TokenAuthentication]
+
     # permission_classes = [IsStaffEditorPermission]
 
     def perform_destroy(self, instance):
@@ -74,7 +77,7 @@ class ProductListCreateAPIVIew(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerailizer
     authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     # permission_classes = [permissions.DjangoModelPermissions]
     permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
@@ -124,17 +127,12 @@ class ProductMixinView(
         print('Data', serializer.data)
 
 
-
-
-
 @api_view(['GET', 'POST'])
 def product_alt_view(request, pk=None, *args, **kwargs):
-
     # we can also write
     # def product_alt_view(request, *args, **kwargs):
     # if so
     # kwargs = {'pk':10}
-
 
     method = request.method
 
