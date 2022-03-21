@@ -2,7 +2,7 @@
 from rest_framework import authentication, generics, mixins, permissions
 from .models import Product
 from api.permissions import IsStaffEditorPermission
-from .serializers import ProductSerailizer
+from .serializers import ProductSerailizer, ProductDetailSerailizer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -32,7 +32,7 @@ class ProductCreateAPIVIew(
 class ProductDetailAPIView(generics.RetrieveAPIView):
     # api/products/<int:pk>/
     queryset = Product.objects.all()
-    serializer_class = ProductSerailizer
+    serializer_class = ProductDetailSerailizer
     # lookup_field = 'pk'
     permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
@@ -82,6 +82,8 @@ class ProductListCreateAPIVIew(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
     def perform_create(self, serializer):
+        email = serializer.validated_data.pop('email')
+        print(email)
         # serializer.save(user=self.request.user)
         print('Validated Data', serializer.validated_data)
         title = serializer.validated_data.get('title')
