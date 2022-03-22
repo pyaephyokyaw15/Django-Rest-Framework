@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from api.authentication import TokenAuthentication
-from api.mixins import StaffEditorPermissionMixin
+from api.mixins import StaffEditorPermissionMixin, UserQuerySetMixin
 
 
 class ProductCreateAPIVIew(
@@ -72,18 +72,19 @@ class ProductListAPIView(generics.ListAPIView):
     authentication_classes = [authentication.TokenAuthentication]
 
 
-class ProductListCreateAPIVIew(generics.ListCreateAPIView):
+class ProductListCreateAPIVIew(UserQuerySetMixin, generics.ListCreateAPIView):
     # api/products/list/create/
     queryset = Product.objects.all()
     serializer_class = ProductSerailizer
-    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
+    # user_field = 'owner'
+    # authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     # permission_classes = [permissions.DjangoModelPermissions]
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
+    # permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
     def perform_create(self, serializer):
-        email = serializer.validated_data.pop('email')
-        print(email)
+        # email = serializer.validated_data.pop('email')
+        # print(email)
         # serializer.save(user=self.request.user)
         print('Validated Data', serializer.validated_data)
         title = serializer.validated_data.get('title')
@@ -92,8 +93,17 @@ class ProductListCreateAPIVIew(generics.ListCreateAPIView):
             content = title
         print(serializer)
         # print('Data', serializer.data)
-        serializer.save(content=content)
+        serializer.save(user=self.request.user, content=content)
         print('Data', serializer.data)
+
+    # def get_queryset(self):
+    #     qs = super().get_queryset()
+    #     request = self.request
+    #     print(request.user)
+    #     user = request.user
+    #     if not user.is_authenticated:
+    #         return Product.objects.none()
+    #     return qs.filter(user=request.user)
 
 
 class ProductMixinView(

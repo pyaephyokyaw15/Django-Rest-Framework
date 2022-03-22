@@ -2,13 +2,18 @@ from  rest_framework import serializers
 from rest_framework.reverse import reverse
 from .models import Product
 from .validators import validate_title, validate_title_no_hello, unique_product_title
+from api.serializers import UserPublicSerializer
+
 
 class ProductSerailizer(serializers.ModelSerializer):
     # if we want different name to model field
+    owner = UserPublicSerializer(source="user", read_only=True)
+
     my_discount = serializers.SerializerMethodField(read_only=True)
     url = serializers.SerializerMethodField(read_only=True)
     my_url = serializers.HyperlinkedIdentityField(view_name='product-detail',
                                                   lookup_field='pk')
+    my_user_data = serializers.SerializerMethodField(read_only=True)
     email = serializers.EmailField(write_only=True)
     title = serializers.CharField(validators=[validate_title, validate_title_no_hello, unique_product_title])
     name = serializers.CharField(source='title', read_only=True)
@@ -19,7 +24,10 @@ class ProductSerailizer(serializers.ModelSerializer):
             'my_url',
             'url',
             'pk',
-            'name'
+            'name',
+            'user',
+            'my_user_data',
+            'owner',
             'email',
             'title',
             'content',
@@ -70,6 +78,11 @@ class ProductSerailizer(serializers.ModelSerializer):
             return None
         return reverse("product-edit", kwargs={"pk": obj.pk}, request=request)
 
+    def get_my_user_data(self, obj):
+        return {
+            "username": obj.user.username
+        }
+
 
 class ProductDetailSerailizer(serializers.ModelSerializer):
     # if we want different name to model field
@@ -99,7 +112,7 @@ class ProductDetailSerailizer(serializers.ModelSerializer):
 
     def get_url(self, obj):
         # return f"/api/products/{obj.pk}"
-        print(self.r)
+        # print(self.request)
         request = self.context.get('request') # self.request
         if request is None:
             return None
