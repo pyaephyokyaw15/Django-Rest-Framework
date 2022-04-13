@@ -1,6 +1,6 @@
 # Learning Django Rest Framework
 
-This repo is learing Django Rest Framework deeply reading the official documentation, follwing the CodingEntrepreneurs Youtube Tutorial, and other resources.
+This repo is learing Django Rest Framework deeply reading the official documentation, following the CodingEntrepreneurs Youtube Tutorial, and other resources.
 
 
 ## What I have learned
