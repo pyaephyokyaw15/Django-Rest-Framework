@@ -6,9 +6,10 @@ from api.serializers import UserPublicSerializer
 
 
 class ProductSerailizer(serializers.ModelSerializer):
-    # if we want different name to model field
+    # nested
     owner = UserPublicSerializer(source="user", read_only=True)
 
+    # if we want different name to model field
     my_discount = serializers.SerializerMethodField(read_only=True)
     url = serializers.SerializerMethodField(read_only=True)
     my_url = serializers.HyperlinkedIdentityField(view_name='product-detail',

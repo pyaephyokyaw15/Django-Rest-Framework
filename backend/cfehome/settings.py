@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'product.apps.ProductConfig',
     'rest_framework',
     'rest_framework.authtoken'
-
 ]
 
 MIDDLEWARE = [
@@ -117,7 +116,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ["rest_framework.authentication.SessionAuthentication",
-                                       "api.authentication.TokenAuthentication"]
+                                       "api.authentication.TokenAuthentication"],
+    'DEFAULT_PAGINATION_CLASS': "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 10
 }
 
 # Internationalization

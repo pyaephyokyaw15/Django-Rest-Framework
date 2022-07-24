@@ -29,3 +29,7 @@ if auth_response.status_code == 200:
 
     get_response = requests.get(endpoint, headers=headers)
     print(get_response.json())
+    data = get_response.json()
+    next_url = data['next']
+    print(next_url)
+    # you can run while loop until next_url is None

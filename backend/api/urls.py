@@ -4,6 +4,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from .test import CustomAuthToken
 
 urlpatterns = [
-    path('auth/', CustomAuthToken.as_view()),
+    # path('auth/', CustomAuthToken.as_view()),
+    path('auth/', obtain_auth_token),
     path('', views.api_home),
 ]
